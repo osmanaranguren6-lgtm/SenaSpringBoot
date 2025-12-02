@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(titulo='Programas', contenido=~{::main})}"
+      lang="es">
+<body>
+    <main>
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="bi bi-book"></i> Gestión de Programas</h2>
+            <a th:href="@{/programas/nuevo}" class="btn btn-sena">
+                <i class="bi bi-plus-circle"></i> Nuevo Programa
+            </a>
+        </div>
+
+        <!-- Tabla de Programas -->
+        <div class="card shadow-sm">
+            <div class="card-header card-header-sena">
+                <h5 class="mb-0">
+                    <i class="bi bi-list-ul"></i> Listado de Programas
+                    <span class="badge bg-light text-dark ms-2" th:text="${totalProgramas}">0</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Código</th>
+                                <th>Nombre</th>
+                                <th>Nivel</th>
+                                <th>Duración (meses)</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="programa : ${programas}">
+                                <td th:text="${programa.codigo}">TEC-001</td>
+                                <td th:text="${programa.nombre}">Programa</td>
+                                <td th:text="${programa.nivel}">Tecnólogo</td>
+                                <td th:text="${programa.duracion}">24</td>
+                                <td>
+                                    <span class="badge"
+                                          th:classappend="${programa.estado == 'ACTIVO'} ? 'bg-success' : 'bg-secondary'"
+                                          th:text="${programa.estado}">ACTIVO</span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/programas/ver/{id}(id=${programa.id})}"
+                                       class="btn btn-sm btn-info" title="Ver">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a th:href="@{/programas/editar/{id}(id=${programa.id})}"
+                                       class="btn btn-sm btn-warning" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form th:action="@{/programas/eliminar/{id}(id=${programa.id})}"
+                                          method="post" style="display: inline;">
+                                        <button type="submit" class="btn btn-sm btn-danger"
+                                                title="Eliminar"
+                                                onclick="return confirm('¿Está seguro de eliminar este programa?')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(programas)}">
+                                <td colspan="6" class="text-center text-muted">
+                                    <i class="bi bi-inbox"></i> No hay programas registrados
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(titulo='Detalle de la Ficha', contenido=~{::main})}"
+      lang="es">
+<body>
+    <main>
+        <!-- Encabezado -->
+        <div class="mb-4">
+            <h2>
+                <i class="bi bi-card-list text-primary"></i> Detalles de la Ficha
+            </h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/fichas}">Fichas</a></li>
+                    <li class="breadcrumb-item active">Detalle</li>
+                </ol>
+            </nav>
+        </div>
+
+        <!-- Información de la Ficha -->
+        <div class="row">
+            <!-- Tarjeta Principal -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow mb-4">
+                    <div class="card-header card-header-sena">
+                        <h5 class="mb-0">
+                            <i class="bi bi-info-circle-fill"></i> Información de la Ficha
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <p class="text-muted mb-1">Número de Ficha</p>
+                                <h5>
+                                    <span class="badge bg-primary fs-5" th:text="${ficha.codigo}">2530001</span>
+                                </h5>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted mb-1">
+                                    <i class="bi bi-circle-fill" th:classappend="${ficha.estado == 'ACTIVA' ? 'text-success' :
+                                                                                   ficha.estado == 'FINALIZADA' ? 'text-warning' :
+                                                                                   ficha.estado == 'INACTIVA' ? 'text-secondary' : 'text-danger'}"></i>
+                                    Estado
+                                </p>
+                                <p class="mb-0">
+                                    <span th:class="'badge ' + ${ficha.estado == 'ACTIVA' ? 'bg-success' :
+                                                                  ficha.estado == 'FINALIZADA' ? 'bg-warning' :
+                                                                  ficha.estado == 'INACTIVA' ? 'bg-secondary' : 'bg-danger'} + ' fs-6'"
+                                          th:text="${ficha.estado}">
+                                        ACTIVA
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <p class="text-muted mb-1">
+                                    <i class="bi bi-book-fill text-primary"></i> Programa de Formación
+                                </p>
+                                <h6 th:text="${ficha.nombrePrograma}">Análisis y Desarrollo de Software</h6>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <p class="text-muted mb-1">
+                                    <i class="bi bi-calendar-check text-success"></i> Fecha de Inicio
+                                </p>
+                                <p class="mb-0" th:text="${#temporals.format(ficha.fechaInicio, 'dd/MM/yyyy')}">01/01/2024</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted mb-1">
+                                    <i class="bi bi-calendar-x text-danger"></i> Fecha de Fin
+                                </p>
+                                <p class="mb-0" th:text="${#temporals.format(ficha.fechaFin, 'dd/MM/yyyy')}">31/12/2024</p>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <p class="text-muted mb-1">
+                                    <i class="bi bi-clock-fill text-info"></i> Jornada
+                                </p>
+                                <p class="mb-0">
+                                    <span class="badge bg-info fs-6" th:text="${ficha.jornada}">DIURNA</span>
+                                </p>
+                            </div>
+                            <div class="col-md-6" th:if="${ficha.fechaCreacion != null}">
+                                <p class="text-muted mb-1">
+                                    <i class="bi bi-calendar-plus text-success"></i> Fecha de Creación
+                                </p>
+                                <p class="mb-0" th:text="${#temporals.format(ficha.fechaCreacion, 'dd/MM/yyyy HH:mm')}">01/01/2024 10:00</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aprendices Asociados -->
+                <div class="card border-0 shadow" th:if="${ficha.aprendices != null && !ficha.aprendices.isEmpty()}">
+                    <div class="card-header card-header-sena">
+                        <h5 class="mb-0">
+                            <i class="bi bi-people-fill"></i> Aprendices Asociados
+                            <span class="badge bg-light text-dark ms-2" th:text="${ficha.aprendices.size()}">0</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Documento</th>
+                                        <th>Nombre Completo</th>
+                                        <th>Email</th>
+                                        <th>Teléfono</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="aprendiz : ${ficha.aprendices}">
+                                        <td><strong th:text="${aprendiz.documento}">1234567890</strong></td>
+                                        <td th:text="${aprendiz.nombreCompleto}">Juan Pérez García</td>
+                                        <td th:text="${aprendiz.correo}">email@ejemplo.com</td>
+                                        <td th:text="${aprendiz.telefono ?: 'N/A'}">3001234567</td>
+                                        <td>
+                                            <span th:class="'badge ' + ${aprendiz.estado == 'ACTIVO' ? 'bg-success' :
+                                                                          aprendiz.estado == 'GRADUADO' ? 'bg-warning' :
+                                                                          aprendiz.estado == 'INACTIVO' ? 'bg-secondary' : 'bg-danger'}"
+                                                  th:text="${aprendiz.estado}">
+                                                ACTIVO
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a th:href="@{'/aprendices/ver/' + ${aprendiz.id}}" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mensaje si no hay aprendices -->
+                <div class="card border-0 shadow" th:if="${ficha.aprendices == null || ficha.aprendices.isEmpty()}">
+                    <div class="card-header card-header-sena">
+                        <h5 class="mb-0">
+                            <i class="bi bi-people-fill"></i> Aprendices Asociados
+                        </h5>
+                    </div>
+                    <div class="card-body text-center py-4">
+                        <i class="bi bi-inbox fs-1 text-muted"></i>
+                        <p class="text-muted mt-2">No hay aprendices asociados a esta ficha</p>
+                        <a th:href="@{/aprendices/nuevo}" class="btn btn-primary btn-sm">
+                            <i class="bi bi-plus-circle"></i> Agregar Aprendiz
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel de Acciones -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow">
+                    <div class="card-header card-header-sena">
+                        <h5 class="mb-0">
+                            <i class="bi bi-lightning-fill"></i> Acciones
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a th:href="@{'/fichas/editar/' + ${ficha.id}}" class="btn btn-primary">
+                                <i class="bi bi-pencil-fill"></i> Editar Ficha
+                            </a>
+                            <button type="button"
+                                    class="btn btn-danger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalEliminar">
+                                <i class="bi bi-trash-fill"></i> Eliminar Ficha
+                            </button>
+                            <hr>
+                            <a th:href="@{'/programas/ver/' + ${ficha.programa.id}}" class="btn btn-outline-info">
+                                <i class="bi bi-book"></i> Ver Programa
+                            </a>
+                            <a th:href="@{/fichas}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Volver a la Lista
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta de Resumen -->
+                <div class="card border-0 shadow mt-4">
+                    <div class="card-header bg-light">
+                        <h6 class="mb-0">
+                            <i class="bi bi-info-circle-fill text-primary"></i> Información del Sistema
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="small text-muted mb-1">ID del Registro</p>
+                        <p class="mb-3"><code th:text="${ficha.id}">#123</code></p>
+
+                        <p class="small text-muted mb-1">Total de Aprendices</p>
+                        <p class="mb-3">
+                            <span class="badge bg-info" th:text="${ficha.aprendices != null ? ficha.aprendices.size() : 0}">0</span>
+                        </p>
+
+                        <p class="small text-muted mb-1">ID del Programa</p>
+                        <p class="mb-0"><code th:text="${ficha.programa.id}">#456</code></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de Confirmación de Eliminación -->
+        <div class="modal fade" id="modalEliminar" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title">
+                            <i class="bi bi-exclamation-triangle-fill"></i> Confirmar Eliminación
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Está seguro que desea eliminar la ficha?</p>
+                        <div class="alert alert-warning">
+                            <strong>Ficha: <span th:text="${ficha.codigo}">2530001</span></strong><br>
+                            <small>Programa: <span th:text="${ficha.nombrePrograma}"></span></small>
+                        </div>
+                        <p class="text-danger small" th:if="${ficha.aprendices != null && !ficha.aprendices.isEmpty()}">
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                            Esta ficha tiene <strong th:text="${ficha.aprendices.size()}">0</strong> aprendiz(es) asociado(s).
+                        </p>
+                        <p class="text-muted small">Esta acción no se puede deshacer.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <form th:action="@{'/fichas/eliminar/' + ${ficha.id}}" method="post">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash-fill"></i> Confirmar Eliminación
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
