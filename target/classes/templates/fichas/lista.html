@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(titulo='Fichas', contenido=~{::main})}"
+      lang="es">
+<body>
+    <main>
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="bi bi-card-list"></i> Gestión de Fichas</h2>
+            <a th:href="@{/fichas/nuevo}" class="btn btn-sena">
+                <i class="bi bi-plus-circle"></i> Nueva Ficha
+            </a>
+        </div>
+
+        <!-- Tabla de Fichas -->
+        <div class="card shadow-sm">
+            <div class="card-header card-header-sena">
+                <h5 class="mb-0">
+                    <i class="bi bi-list-ul"></i> Listado de Fichas
+                    <span class="badge bg-light text-dark ms-2" th:text="${totalFichas}">0</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Número Ficha</th>
+                                <th>Programa</th>
+                                <th>Fecha Inicio</th>
+                                <th>Fecha Fin</th>
+                                <th>Jornada</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="ficha : ${fichas}">
+                                <td th:text="${ficha.codigo}">2530001</td>
+                                <td th:text="${ficha.nombrePrograma}">Programa</td>
+                                <td th:text="${#temporals.format(ficha.fechaInicio, 'dd/MM/yyyy')}">01/01/2025</td>
+                                <td th:text="${#temporals.format(ficha.fechaFin, 'dd/MM/yyyy')}">01/01/2027</td>
+                                <td th:text="${ficha.jornada}">DIURNA</td>
+                                <td>
+                                    <span class="badge"
+                                          th:classappend="${ficha.estado == 'ACTIVA'} ? 'bg-success' : 'bg-secondary'"
+                                          th:text="${ficha.estado}">ACTIVA</span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/fichas/ver/{id}(id=${ficha.id})}"
+                                       class="btn btn-sm btn-info" title="Ver">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a th:href="@{/fichas/editar/{id}(id=${ficha.id})}"
+                                       class="btn btn-sm btn-warning" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form th:action="@{/fichas/eliminar/{id}(id=${ficha.id})}"
+                                          method="post" style="display: inline;">
+                                        <button type="submit" class="btn btn-sm btn-danger"
+                                                title="Eliminar"
+                                                onclick="return confirm('¿Está seguro de eliminar esta ficha?')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(fichas)}">
+                                <td colspan="7" class="text-center text-muted">
+                                    <i class="bi bi-inbox"></i> No hay fichas registradas
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

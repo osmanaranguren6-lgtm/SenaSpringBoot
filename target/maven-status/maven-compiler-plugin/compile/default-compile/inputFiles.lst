@@ -1,0 +1,16 @@
+C:\Duitama2025\sena-springboot\src\main\java\com\sena\controller\ProgramaController.java
+C:\Duitama2025\sena-springboot\src\main\java\com\sena\exception\DuplicateResourceException.java
+C:\Duitama2025\sena-springboot\src\main\java\com\sena\repository\AprendizRepository.java
+C:\Duitama2025\sena-springboot\src\main\java\com\sena\repository\ProgramaRepository.java
+C:\Duitama2025\sena-springboot\src\main\java\com\sena\SenaSpringBootApplication.java
+C:\Duitama2025\sena-springboot\src\main\java\com\sena\controller\HomeController.java
+C:\Duitama2025\sena-springboot\src\main\java\com\sena\controller\FichaController.java
+C:\Duitama2025\sena-springboot\src\main\java\com\sena\exception\ResourceNotFoundException.java
+C:\Duitama2025\sena-springboot\src\main\java\com\sena\service\ProgramaService.java
+C:\Duitama2025\sena-springboot\src\main\java\com\sena\model\Programa.java
+C:\Duitama2025\sena-springboot\src\main\java\com\sena\repository\FichaRepository.java
+C:\Duitama2025\sena-springboot\src\main\java\com\sena\service\FichaService.java
+C:\Duitama2025\sena-springboot\src\main\java\com\sena\model\Aprendiz.java
+C:\Duitama2025\sena-springboot\src\main\java\com\sena\service\AprendizService.java
+C:\Duitama2025\sena-springboot\src\main\java\com\sena\controller\AprendizController.java
+C:\Duitama2025\sena-springboot\src\main\java\com\sena\model\Ficha.java

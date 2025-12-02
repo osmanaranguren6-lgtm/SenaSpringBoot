@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{layout :: layout(titulo='Lista de Aprendices', contenido=~{::main})}" 
+      lang="es">
+<body>
+    <main>
+        <!-- Encabezado -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="mb-0">
+                    <i class="bi bi-people-fill text-primary"></i> Gestión de Aprendices
+                </h2>
+                <p class="text-muted mb-0">
+                    Total: <strong th:text="${totalAprendices}">0</strong> aprendices
+                    <span th:if="${fichaFiltro}" class="badge bg-info ms-2" th:text="'Ficha: ' + ${fichaFiltro}"></span>
+                </p>
+            </div>
+            <a th:href="@{/aprendices/nuevo}" class="btn btn-sena">
+                <i class="bi bi-person-plus-fill"></i> Nuevo Aprendiz
+            </a>
+        </div>
+
+        <!-- Barra de Búsqueda y Filtros -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <form th:action="@{/aprendices/buscar}" method="get" class="row g-3">
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" 
+                                   class="form-control" 
+                                   name="searchTerm" 
+                                   th:value="${searchTerm}"
+                                   placeholder="Buscar por nombre, apellido o documento...">
+                            <button type="submit" class="btn btn-primary">Buscar</button>
+                            <a th:href="@{/aprendices}" class="btn btn-outline-secondary">Limpiar</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tabla de Aprendices -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle" id="tablaAprendices">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Documento</th>
+                                <th>Nombre Completo</th>
+                                <th>Correo</th>
+                                <th>Programa</th>
+                                <th>Ficha</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(aprendices)}">
+                                <td colspan="7" class="text-center text-muted py-5">
+                                    <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+                                    <p class="mt-2">No hay aprendices registrados</p>
+                                    <a th:href="@{/aprendices/nuevo}" class="btn btn-sena">
+                                        <i class="bi bi-person-plus-fill"></i> Registrar Primer Aprendiz
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr th:each="aprendiz, iterStat : ${aprendices}">
+                                <td th:text="${iterStat.count}">1</td>
+                                <td th:text="${aprendiz.documento}">12345</td>
+                                <td>
+                                    <strong th:text="${aprendiz.nombreCompleto}">Juan Pérez</strong>
+                                </td>
+                                <td th:text="${aprendiz.correo}">correo@ejemplo.com</td>
+                                <td>
+                                    <small th:text="${aprendiz.nombrePrograma}">Programa</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info" th:text="${aprendiz.codigoFicha}">2461234</span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a th:href="@{'/aprendices/ver/' + ${aprendiz.id}}" 
+                                           class="btn btn-outline-info" 
+                                           title="Ver detalles">
+                                            <i class="bi bi-eye-fill"></i>
+                                        </a>
+                                        <a th:href="@{'/aprendices/editar/' + ${aprendiz.id}}" 
+                                           class="btn btn-outline-primary" 
+                                           title="Editar">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+                                        <button type="button" 
+                                                class="btn btn-outline-danger" 
+                                                onclick="confirmarEliminacion([[${aprendiz.id}]], [[${aprendiz.nombreCompleto}]])"
+                                                title="Eliminar">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de Confirmación de Eliminación -->
+        <div class="modal fade" id="modalEliminar" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title">
+                            <i class="bi bi-exclamation-triangle-fill"></i> Confirmar Eliminación
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Está seguro que desea eliminar al aprendiz?</p>
+                        <p class="fw-bold" id="nombreAprendiz"></p>
+                        <p class="text-muted small">Esta acción no se puede deshacer.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <form id="formEliminar" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash-fill"></i> Eliminar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script th:inline="javascript">
+        function confirmarEliminacion(id, nombre) {
+            document.getElementById('nombreAprendiz').textContent = nombre;
+            document.getElementById('formEliminar').action = '/aprendices/eliminar/' + id;
+            var modal = new bootstrap.Modal(document.getElementById('modalEliminar'));
+            modal.show();
+        }
+
+        // Inicializar DataTables (opcional)
+        $(document).ready(function() {
+            if ($.fn.DataTable && $('#tablaAprendices tbody tr').length > 10) {
+                $('#tablaAprendices').DataTable({
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+                    },
+                    pageLength: 10,
+                    order: [[1, 'asc']],
+                    columnDefs: [
+                        { orderable: false, targets: 7 }
+                    ]
+                });
+            }
+        });
+    </script>
+</body>
+</html>
